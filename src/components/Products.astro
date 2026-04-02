@@ -40,7 +40,7 @@ const products = [
 <section class="products" id="products">
   <div class="container">
     <div class="section-header reveal">
-      <p class="section-eyebrow">Два приложения</p>
+      <span class="section-line" aria-hidden="true"></span>
       <h2 class="section-title">Полный цикл работы с расписанием</h2>
       <p class="section-sub">
         РН планирует нагрузку, РШР строит расписание. Оба работают вместе и по отдельности.
@@ -50,14 +50,10 @@ const products = [
     <div class="products-grid">
       {products.map((p, i) => (
         <div class={`product-card product-${p.color} reveal reveal-delay-${i + 1}`}>
-          <div class="card-accent-bar"></div>
           <div class="card-body">
             <div class="card-header-row">
               <img src={p.logo} alt={`${p.abbr} логотип`} class="card-logo" />
-              <div class="card-titles">
-                <span class={`card-abbr card-abbr-${p.color}`}>{p.abbr}</span>
-                <span class="card-full">{p.full}</span>
-              </div>
+              <span class="card-full">{p.full}</span>
             </div>
             <p class="card-tagline">{p.tagline}</p>
             <p class="card-desc">{p.description}</p>
@@ -87,18 +83,8 @@ const products = [
   }
 
   .section-header {
-    text-align: center;
     max-width: 640px;
-    margin: 0 auto 64px;
-  }
-
-  .section-eyebrow {
-    font-size: 0.8125rem;
-    font-weight: 600;
-    letter-spacing: 0.07em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    margin-bottom: 12px;
+    margin: 0 0 64px;
   }
 
   .section-title {
@@ -121,7 +107,6 @@ const products = [
   }
 
   .product-card {
-    background: white;
     border-radius: var(--radius-xl);
     border: 1.5px solid var(--border);
     overflow: hidden;
@@ -129,17 +114,13 @@ const products = [
     transition: box-shadow 0.2s, transform 0.2s;
   }
 
+  .product-blue { background: #fafcff; }
+  .product-green { background: #f9fdf9; }
+
   .product-card:hover {
     box-shadow: var(--shadow-lg);
     transform: translateY(-3px);
   }
-
-  .card-accent-bar {
-    height: 4px;
-  }
-
-  .product-blue .card-accent-bar { background: var(--blue); }
-  .product-green .card-accent-bar { background: var(--green); }
 
   .card-body {
     padding: 36px;
@@ -153,35 +134,19 @@ const products = [
   }
 
   .card-logo {
-    width: 56px;
-    height: 56px;
-    border-radius: 14px;
+    width: 88px;
+    height: 88px;
+    border-radius: 20px;
     object-fit: contain;
     flex-shrink: 0;
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow);
   }
-
-  .card-titles {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-
-  .card-abbr {
-    font-family: 'Geologica', sans-serif;
-    font-weight: 800;
-    font-size: 1.5rem;
-    letter-spacing: -0.03em;
-    line-height: 1;
-  }
-
-  .card-abbr-blue { color: var(--blue); }
-  .card-abbr-green { color: var(--green); }
 
   .card-full {
-    font-size: 0.8125rem;
-    color: var(--text-muted);
+    font-size: 1rem;
+    color: var(--text-secondary);
     font-weight: 500;
+    line-height: 1.4;
   }
 
   .card-tagline {

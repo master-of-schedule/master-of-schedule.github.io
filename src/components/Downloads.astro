@@ -61,7 +61,7 @@ const apps = [
 <section class="downloads" id="download">
   <div class="container">
     <div class="section-header reveal">
-      <p class="section-eyebrow">Скачать</p>
+      <span class="section-line" aria-hidden="true"></span>
       <h2 class="section-title">Выберите версию</h2>
       <p class="section-sub">
         Настольное приложение для Windows и macOS или веб-версия — один HTML-файл без установки.
@@ -74,7 +74,6 @@ const apps = [
           <div class="card-top">
             <img src={app.logo} alt={`${app.abbr} логотип`} class="dl-logo" />
             <div class="dl-info">
-              <div class={`dl-abbr dl-abbr-${app.color}`}>{app.abbr}</div>
               <div class="dl-full">{app.full}</div>
             </div>
             {app.version && (
@@ -157,18 +156,8 @@ const apps = [
   }
 
   .section-header {
-    text-align: center;
     max-width: 560px;
-    margin: 0 auto 60px;
-  }
-
-  .section-eyebrow {
-    font-size: 0.8125rem;
-    font-weight: 600;
-    letter-spacing: 0.07em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    margin-bottom: 12px;
+    margin: 0 0 60px;
   }
 
   .section-title {
@@ -200,9 +189,6 @@ const apps = [
     overflow: hidden;
   }
 
-  .download-card-blue { border-top: 4px solid var(--blue); }
-  .download-card-green { border-top: 4px solid var(--green); }
-
   .card-top {
     display: flex;
     align-items: center;
@@ -211,9 +197,9 @@ const apps = [
   }
 
   .dl-logo {
-    width: 52px;
-    height: 52px;
-    border-radius: 12px;
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
     object-fit: contain;
     flex-shrink: 0;
     box-shadow: var(--shadow-sm);
@@ -224,20 +210,10 @@ const apps = [
     min-width: 0;
   }
 
-  .dl-abbr {
-    font-family: 'Geologica', sans-serif;
-    font-weight: 800;
-    font-size: 1.375rem;
-    letter-spacing: -0.025em;
-  }
-
-  .dl-abbr-blue { color: var(--blue); }
-  .dl-abbr-green { color: var(--green); }
-
   .dl-full {
-    font-size: 0.8125rem;
-    color: var(--text-muted);
-    margin-top: 1px;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--text-secondary);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

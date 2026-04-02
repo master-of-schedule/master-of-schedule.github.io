@@ -174,30 +174,14 @@ section {
   border-color: var(--text-muted);
 }
 
-/* ── Section tag ────────────────────────────── */
-.section-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  padding: 5px 14px;
-  border-radius: 100px;
+/* ── Section accent line — gradient bar above section titles ── */
+.section-line {
+  display: block;
+  width: 40px;
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--blue), var(--green));
   margin-bottom: 20px;
-}
-
-.section-tag-blue {
-  color: var(--blue);
-  background: var(--blue-50);
-  border: 1px solid rgba(26, 86, 219, 0.14);
-}
-
-.section-tag-green {
-  color: var(--green);
-  background: var(--green-50);
-  border: 1px solid rgba(30, 126, 52, 0.14);
 }
 
 /* ── Screenshot frame ───────────────────────── */

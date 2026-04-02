@@ -4,7 +4,7 @@ const base = import.meta.env.BASE_URL;
 
 <section class="hero">
   <div class="hero-grid" aria-hidden="true"></div>
-  <div class="hero-fade-bottom" aria-hidden="true"></div>
+  <div class="hero-fade" aria-hidden="true"></div>
 
   <div class="container hero-content">
     <div class="hero-badge reveal">
@@ -24,35 +24,17 @@ const base = import.meta.env.BASE_URL;
     </p>
 
     <div class="hero-ctas reveal reveal-delay-3">
-      <a href="#download" class="btn btn-blue hero-btn">
+      <a href="#download" class="hero-btn hero-btn-blue">
         <img src={`${base}logos/rshr.png`} alt="" class="hero-btn-logo" />
         Скачать РШР
       </a>
-      <a href="#download" class="btn btn-green hero-btn">
+      <a href="#download" class="hero-btn hero-btn-green">
         <img src={`${base}logos/rn.png`} alt="" class="hero-btn-logo" />
         Скачать РН
       </a>
-      <a href="#features" class="btn btn-ghost hero-btn">
+      <a href="#features" class="hero-btn hero-btn-ghost">
         Подробнее
       </a>
-    </div>
-
-    <div class="hero-apps reveal reveal-delay-4">
-      <div class="app-pill app-pill-blue">
-        <img src={`${base}logos/rshr.png`} alt="РШР" class="app-pill-logo" />
-        <div>
-          <div class="app-pill-name">РШР</div>
-          <div class="app-pill-desc">Редактор Школьного Расписания</div>
-        </div>
-      </div>
-      <div class="app-pill-sep" aria-hidden="true">→</div>
-      <div class="app-pill app-pill-green">
-        <img src={`${base}logos/rn.png`} alt="РН" class="app-pill-logo" />
-        <div>
-          <div class="app-pill-name">РН</div>
-          <div class="app-pill-desc">Редактор Нагрузки</div>
-        </div>
-      </div>
     </div>
   </div>
 </section>
@@ -62,30 +44,34 @@ const base = import.meta.env.BASE_URL;
     position: relative;
     padding: 120px 0 100px;
     overflow: hidden;
+    background: #fafbfd;
     text-align: center;
     min-height: calc(100vh - var(--nav-h));
     display: flex;
     align-items: center;
   }
 
-  /* Timetable grid background */
+  /* Notebook / graph-paper grid */
   .hero-grid {
     position: absolute;
     inset: 0;
     background-image:
-      linear-gradient(to right, #dde1e9 1px, transparent 1px),
-      linear-gradient(to bottom, #dde1e9 1px, transparent 1px);
-    background-size: 52px 52px;
-    opacity: 0.5;
+      linear-gradient(to right, #c9d2e0 1px, transparent 1px),
+      linear-gradient(to bottom, #c9d2e0 1px, transparent 1px),
+      linear-gradient(to right, #dde3ed 1px, transparent 1px),
+      linear-gradient(to bottom, #dde3ed 1px, transparent 1px);
+    /* major lines every 208px, minor every 52px */
+    background-size: 208px 208px, 208px 208px, 52px 52px, 52px 52px;
+    opacity: 0.55;
   }
 
-  /* Radial fade so grid fades to white at edges */
-  .hero-fade-bottom {
+  /* Radial vignette fades the grid at edges and centre */
+  .hero-fade {
     position: absolute;
     inset: 0;
     background:
-      radial-gradient(ellipse 90% 70% at 50% 50%, transparent 20%, white 80%),
-      linear-gradient(to bottom, transparent 60%, white 100%);
+      radial-gradient(ellipse 85% 70% at 50% 45%, transparent 15%, #fafbfd 72%),
+      linear-gradient(to bottom, transparent 55%, var(--bg-subtle) 100%);
   }
 
   .hero-content {
@@ -118,7 +104,7 @@ const base = import.meta.env.BASE_URL;
     flex-shrink: 0;
   }
 
-  .badge-blue { background: var(--blue); }
+  .badge-blue  { background: var(--blue); }
   .badge-green { background: var(--green); }
 
   .hero-title {
@@ -143,7 +129,7 @@ const base = import.meta.env.BASE_URL;
     font-size: 1.1875rem;
     color: var(--text-secondary);
     max-width: 520px;
-    margin: 0 auto 44px;
+    margin: 0 auto 48px;
     line-height: 1.7;
   }
 
@@ -152,84 +138,68 @@ const base = import.meta.env.BASE_URL;
     gap: 12px;
     justify-content: center;
     flex-wrap: wrap;
-    margin-bottom: 64px;
   }
 
+  /* Outlined download buttons — icon stands out against transparent bg */
   .hero-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 26px;
+    border-radius: 12px;
+    font-family: 'Golos Text', sans-serif;
     font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.15s, box-shadow 0.15s, transform 0.15s;
+  }
+
+  .hero-btn:hover {
+    transform: translateY(-2px);
+  }
+
+  .hero-btn-blue {
+    color: var(--blue);
+    border: 2px solid var(--blue);
+    background: rgba(26, 86, 219, 0.04);
+  }
+
+  .hero-btn-blue:hover {
+    background: var(--blue-50);
+    box-shadow: 0 6px 22px var(--blue-glow);
+  }
+
+  .hero-btn-green {
+    color: var(--green);
+    border: 2px solid var(--green);
+    background: rgba(30, 126, 52, 0.04);
+  }
+
+  .hero-btn-green:hover {
+    background: var(--green-50);
+    box-shadow: 0 6px 22px var(--green-glow);
+  }
+
+  .hero-btn-ghost {
+    color: var(--text-secondary);
+    border: 2px solid var(--border-strong);
+    background: transparent;
+  }
+
+  .hero-btn-ghost:hover {
+    background: var(--bg-subtle);
+    color: var(--text);
+    border-color: var(--text-muted);
   }
 
   .hero-btn-logo {
-    width: 22px;
-    height: 22px;
-    border-radius: 6px;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
     object-fit: contain;
     flex-shrink: 0;
-  }
-
-  /* App pills flow */
-  .hero-apps {
-    display: inline-flex;
-    align-items: center;
-    gap: 16px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .app-pill {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 20px;
-    border-radius: var(--radius);
-    background: white;
-    border: 1.5px solid var(--border);
-    box-shadow: var(--shadow);
-    text-align: left;
-    transition: box-shadow 0.2s, transform 0.2s;
-  }
-
-  .app-pill:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
-  }
-
-  .app-pill-blue {
-    border-top: 3px solid var(--blue);
-  }
-
-  .app-pill-green {
-    border-top: 3px solid var(--green);
-  }
-
-  .app-pill-logo {
-    width: 44px;
-    height: 44px;
-    border-radius: 10px;
-    object-fit: contain;
-    flex-shrink: 0;
-  }
-
-  .app-pill-name {
-    font-family: 'Geologica', sans-serif;
-    font-weight: 800;
-    font-size: 1.0625rem;
-    letter-spacing: -0.02em;
-  }
-
-  .app-pill-blue .app-pill-name { color: var(--blue); }
-  .app-pill-green .app-pill-name { color: var(--green); }
-
-  .app-pill-desc {
-    font-size: 0.8125rem;
-    color: var(--text-muted);
-    margin-top: 1px;
-  }
-
-  .app-pill-sep {
-    font-size: 1.25rem;
-    color: var(--text-muted);
-    font-weight: 300;
   }
 
   @media (max-width: 768px) {
@@ -238,13 +208,9 @@ const base = import.meta.env.BASE_URL;
       min-height: unset;
     }
 
-    .hero-apps {
+    .hero-ctas {
       flex-direction: column;
-      gap: 8px;
-    }
-
-    .app-pill-sep {
-      transform: rotate(90deg);
+      align-items: center;
     }
   }
 </style>
