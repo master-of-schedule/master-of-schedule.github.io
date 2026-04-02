@@ -1,23 +1,58 @@
 ---
 const base = import.meta.env.BASE_URL;
+const REPO = 'master-of-schedule/master-of-schedule';
+const RELEASES_URL = `https://github.com/${REPO}/releases`;
+
+interface GhAsset { name: string; browser_download_url: string; }
+interface GhRelease { tag_name: string; assets: GhAsset[]; }
+
+async function fetchLatestReleases(): Promise<{ rshr: GhRelease | null; rn: GhRelease | null }> {
+  try {
+    const res = await fetch(
+      `https://api.github.com/repos/${REPO}/releases?per_page=20`,
+      { headers: { Accept: 'application/vnd.github.v3+json' } }
+    );
+    if (!res.ok) return { rshr: null, rn: null };
+    const releases: GhRelease[] = await res.json();
+    return {
+      rshr: releases.find(r => /^v\d/.test(r.tag_name)) ?? null,
+      rn:   releases.find(r => r.tag_name.startsWith('workload/v')) ?? null,
+    };
+  } catch {
+    return { rshr: null, rn: null };
+  }
+}
+
+function asset(release: GhRelease | null, ext: string): string | null {
+  return release?.assets.find(a => a.name.toLowerCase().endsWith(ext))
+    ?.browser_download_url ?? null;
+}
+
+const { rshr, rn } = await fetchLatestReleases();
 
 const apps = [
   {
-    id: 'rshr',
     logo: `${base}logos/rshr.png`,
     abbr: 'РШР',
     full: 'Редактор Школьного Расписания',
     color: 'blue',
-    releasesUrl: 'https://github.com/master-of-schedule/master-of-schedule/releases',
+    version: rshr?.tag_name ?? null,
+    macos:   asset(rshr, '.dmg'),
+    windows: asset(rshr, '.exe'),
+    web:     asset(rshr, '.zip'),
+    releasesUrl: RELEASES_URL,
     exampleFile: `${base}example-data.xlsx`,
   },
   {
-    id: 'rn',
     logo: `${base}logos/rn.png`,
     abbr: 'РН',
     full: 'Редактор Нагрузки',
     color: 'green',
-    releasesUrl: 'https://github.com/master-of-schedule/master-of-schedule/releases?q=workload',
+    version: rn?.tag_name?.replace('workload/', '') ?? null,
+    macos:   asset(rn, '.dmg'),
+    windows: asset(rn, '.exe'),
+    web:     asset(rn, '.zip'),
+    releasesUrl: `${RELEASES_URL}?q=workload`,
     exampleFile: null,
   },
 ];
@@ -42,20 +77,17 @@ const apps = [
               <div class={`dl-abbr dl-abbr-${app.color}`}>{app.abbr}</div>
               <div class="dl-full">{app.full}</div>
             </div>
-            <span
-              class={`version-badge version-badge-${app.color}`}
-              data-ver={app.id}
-              aria-live="polite"
-            >
-              …
-            </span>
+            {app.version && (
+              <span class={`version-badge version-badge-${app.color}`}>
+                {app.version}
+              </span>
+            )}
           </div>
 
           <div class="platform-list">
             <a
-              href={app.releasesUrl}
+              href={app.macos ?? app.releasesUrl}
               class={`platform-btn platform-btn-${app.color}`}
-              data-dl={`${app.id}-macos`}
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -66,9 +98,8 @@ const apps = [
             </a>
 
             <a
-              href={app.releasesUrl}
+              href={app.windows ?? app.releasesUrl}
               class={`platform-btn platform-btn-${app.color}`}
-              data-dl={`${app.id}-windows`}
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -79,9 +110,8 @@ const apps = [
             </a>
 
             <a
-              href={app.releasesUrl}
+              href={app.web ?? app.releasesUrl}
               class={`platform-btn platform-btn-${app.color}`}
-              data-dl={`${app.id}-web`}
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -119,78 +149,6 @@ const apps = [
     </div>
   </div>
 </section>
-
-<script>
-(function () {
-  const CACHE_KEY = 'rshr_gh_releases_v1';
-  const CACHE_TTL = 15 * 60 * 1000;
-  const REPO = 'master-of-schedule/master-of-schedule';
-
-  async function getReleasesData(): Promise<{ rshr: any; rn: any } | null> {
-    try {
-      const raw = localStorage.getItem(CACHE_KEY);
-      if (raw) {
-        const entry = JSON.parse(raw);
-        if (Date.now() - entry.ts < CACHE_TTL) return entry.data;
-      }
-    } catch {}
-
-    const res = await fetch(
-      `https://api.github.com/repos/${REPO}/releases?per_page=20`
-    );
-    if (!res.ok) return null;
-
-    const releases: any[] = await res.json();
-    const rshr = releases.find((r) => /^v\d/.test(r.tag_name)) ?? null;
-    const rn = releases.find((r) => r.tag_name.startsWith('workload/v')) ?? null;
-    const data = { rshr, rn };
-
-    try {
-      localStorage.setItem(CACHE_KEY, JSON.stringify({ data, ts: Date.now() }));
-    } catch {}
-
-    return data;
-  }
-
-  function findAsset(release: any, ext: string): string | null {
-    return (
-      release?.assets?.find((a: any) =>
-        a.name.toLowerCase().endsWith(ext)
-      )?.browser_download_url ?? null
-    );
-  }
-
-  function applyRelease(id: string, release: any): void {
-    if (!release) return;
-
-    const ver = release.tag_name.replace('workload/', '');
-    const badge = document.querySelector<HTMLElement>(`[data-ver="${id}"]`);
-    if (badge) badge.textContent = ver;
-
-    const platforms: Record<string, string> = {
-      [`${id}-macos`]: '.dmg',
-      [`${id}-windows`]: '.exe',
-      [`${id}-web`]: '.zip',
-    };
-
-    for (const [key, ext] of Object.entries(platforms)) {
-      const url = findAsset(release, ext);
-      if (url) {
-        const btn = document.querySelector<HTMLAnchorElement>(`[data-dl="${key}"]`);
-        if (btn) btn.href = url;
-      }
-    }
-  }
-
-  getReleasesData()
-    .then((data) => {
-      if (!data) return;
-      applyRelease('rshr', data.rshr);
-      applyRelease('rn', data.rn);
-    })
-    .catch(() => {});
-})();
-</script>
 
 <style>
   .downloads {
@@ -242,13 +200,8 @@ const apps = [
     overflow: hidden;
   }
 
-  .download-card-blue {
-    border-top: 4px solid var(--blue);
-  }
-
-  .download-card-green {
-    border-top: 4px solid var(--green);
-  }
+  .download-card-blue { border-top: 4px solid var(--blue); }
+  .download-card-green { border-top: 4px solid var(--green); }
 
   .card-top {
     display: flex;
@@ -364,10 +317,8 @@ const apps = [
     display: flex;
     flex-direction: column;
     gap: 8px;
-    padding: 0 28px 24px;
+    padding: 16px 28px 24px;
     border-top: 1px solid var(--border);
-    margin-top: 4px;
-    padding-top: 16px;
   }
 
   .all-releases-link,
