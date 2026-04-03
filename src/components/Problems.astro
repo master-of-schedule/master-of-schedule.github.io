@@ -12,7 +12,7 @@ const problems = [
     find: { label: 'Найти', text: 'Распределение нагрузки' },
     type: 'simple' as const,
     formulaPrefix: 'Вы\u2009+\u2009',
-    formulaSuffix: '\u2009=\u2009Нагрузка готова',
+    formulaSuffix: '\u2009=\u2009Нагрузка\u2009+\u2009список\u2009занятий',
   },
   {
     num: '02',
@@ -36,26 +36,17 @@ const problems = [
     find: { label: 'Найти', text: 'Выход' },
     type: 'chain' as const,
     chain: [
-      'Расписание\u2009−\u2009больничные\u2009+\u2009(Вы\u2009+\u2009РШР)\u2009=\u2009Расписание',
-      'Расписание\u2009−\u2009ВПР\u2009+\u2009(Вы\u2009+\u2009РШР)\u2009=\u2009Расписание',
-      'Расписание\u2009−\u2009прорвало\u2009отопление\u2009+\u2009(Вы\u2009+\u2009РШР)\u2009=\u2009Расписание',
-      'Расписание\u2009−\u2009карантин\u2009в\u20094В\u2009+\u2009(Вы\u2009+\u2009РШР)\u2009=\u2009Расписание',
-      'Расписание\u2009−\u2009перенесли\u2009педсовет\u2009+\u2009(Вы\u2009+\u2009РШР)\u2009=\u2009Расписание',
-      'Расписание\u2009−\u2009праздничный\u2009день\u2009+\u2009(Вы\u2009+\u2009РШР)\u2009=\u2009Расписание',
+      '−\u2009больничные',
+      '−\u2009ВПР',
+      '−\u2009прорвало\u2009отопление',
+      '−\u2009карантин\u2009в\u20094В',
+      '−\u2009перенесли\u2009педсовет',
+      '−\u2009праздничный\u2009день',
     ],
+    conclusion: '=\u2009Расписание',
   },
 ];
 
-// Split a chain line so "(Вы + РШР)" can be highlighted
-function splitChainLine(line: string) {
-  const marker = '(Вы\u2009+\u2009РШР)';
-  const idx = line.indexOf(marker);
-  if (idx === -1) return { before: line, after: '' };
-  return {
-    before: line.slice(0, idx),
-    after: line.slice(idx + marker.length),
-  };
-}
 ---
 
 <section class="problems">
@@ -100,19 +91,25 @@ function splitChainLine(line: string) {
             )}
 
             {p.type === 'chain' && (
-              <div class="chain-outer">
-                <div class="chain-lines">
-                  {p.chain.map(line => {
-                    const { before, after } = splitChainLine(line);
-                    return (
+              <>
+                <div class="chain-outer">
+                  <div class="chain-lines">
+                    {p.chain.map(line => (
                       <div class="chain-line">
-                        {before}<span class="chain-tool">(Вы + РШР)</span>{after}
+                        <span class="chain-event">{line}</span>
+                        <span class="chain-plus">\u2009+\u2009</span>
+                        <span class="chain-tool">(Вы + РШР)</span>
                       </div>
-                    );
-                  })}
+                    ))}
+                  </div>
+                  <div class="chain-fade" aria-hidden="true"></div>
                 </div>
-                <div class="chain-fade" aria-hidden="true"></div>
-              </div>
+                <div class="chain-conclusion">
+                  <span class="chain-tool">(Вы + РШР)</span>
+                  <span class="chain-conclusion-eq">\u2009всегда\u2009→\u2009</span>
+                  <span class="chain-conclusion-result">{p.conclusion}</span>
+                </div>
+              </>
             )}
           </div>
         </div>
@@ -344,9 +341,40 @@ function splitChainLine(line: string) {
     text-overflow: clip;
   }
 
+  .chain-event {
+    color: var(--text-secondary);
+  }
+
+  .chain-plus {
+    color: var(--text-muted);
+  }
+
   .chain-tool {
     color: var(--blue);
     font-weight: 600;
+  }
+
+  .chain-conclusion {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--border);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0;
+  }
+
+  .chain-conclusion-eq {
+    color: var(--text-muted);
+    font-weight: 400;
+  }
+
+  .chain-conclusion-result {
+    color: var(--text);
+    font-weight: 700;
   }
 
   /* Gradient fade suggesting the list goes on */
