@@ -97,7 +97,7 @@ const problems = [
                     {p.chain.map(line => (
                       <div class="chain-line">
                         <span class="chain-event">{line}</span>
-                        <span class="chain-plus">\u2009+\u2009</span>
+                        <span class="chain-plus">{'\u2009+\u2009'}</span>
                         <span class="chain-tool">(Вы + РШР)</span>
                       </div>
                     ))}
@@ -106,7 +106,7 @@ const problems = [
                 </div>
                 <div class="chain-conclusion">
                   <span class="chain-tool">(Вы + РШР)</span>
-                  <span class="chain-conclusion-eq">\u2009всегда\u2009→\u2009</span>
+                  <span class="chain-conclusion-eq">{'\u2009всегда\u2009→\u2009'}</span>
                   <span class="chain-conclusion-result">{p.conclusion}</span>
                 </div>
               </>
