@@ -165,6 +165,12 @@ const problems = [
     z-index: 1;
   }
 
+  /* Second card: margin on the right — becomes the right-hand page of an open notebook */
+  .problem-card:nth-child(2)::before {
+    left: auto;
+    right: 36px;
+  }
+
   /* ── Card header ─── */
   .card-head {
     display: flex;
