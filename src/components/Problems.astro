@@ -131,12 +131,12 @@ const problems = [
     align-items: stretch;
   }
 
-  /* ── Card ─── */
+  /* ── Card ─── (default: right margin, torn LEFT edge — cards 1 & 3) */
   .problem-card {
     position: relative;
     border-radius: 0;
     border: 1.5px solid var(--border);
-    border-right: none;   /* right edge is torn — no clean border line there */
+    border-left: none;    /* left edge is torn — no clean border line there */
     filter: drop-shadow(0 2px 14px rgba(0, 0, 0, 0.14));
     overflow: hidden;
     display: flex;
@@ -152,34 +152,7 @@ const problems = [
       rgba(180, 200, 220, 0.28) 28px
     );
 
-    /* Torn right edge — irregular cuts 0–6 px deep */
-    clip-path: polygon(
-      0% 0%, 100% 0%,
-      calc(100% - 3px) 3%,  100%             6%,
-      calc(100% - 5px) 9%,  calc(100% - 1px) 12%,
-      calc(100% - 4px) 15%, calc(100% - 6px) 18%,
-      calc(100% - 2px) 21%, calc(100% - 3px) 24%,
-      100%             27%, calc(100% - 5px) 30%,
-      calc(100% - 1px) 33%, calc(100% - 4px) 36%,
-      calc(100% - 2px) 39%, calc(100% - 6px) 42%,
-      calc(100% - 3px) 45%, 100%             48%,
-      calc(100% - 5px) 51%, calc(100% - 4px) 54%,
-      calc(100% - 1px) 57%, calc(100% - 3px) 60%,
-      calc(100% - 6px) 63%, calc(100% - 2px) 66%,
-      calc(100% - 4px) 69%, 100%             72%,
-      calc(100% - 5px) 75%, calc(100% - 3px) 78%,
-      calc(100% - 1px) 81%, calc(100% - 4px) 84%,
-      calc(100% - 6px) 87%, calc(100% - 2px) 90%,
-      calc(100% - 3px) 93%, 100%             96%,
-      calc(100% - 5px) 99%, 100%             100%,
-      0% 100%
-    );
-  }
-
-  /* Card 2: torn LEFT edge (margin line is on the right) */
-  .problem-card:nth-child(2) {
-    border-right: 1.5px solid var(--border);
-    border-left: none;
+    /* Torn left edge — irregular cuts 0–6 px deep */
     clip-path: polygon(
       100% 0%, 0% 0%,
       calc(0% + 3px) 3%,  0%             6%,
@@ -203,11 +176,12 @@ const problems = [
     );
   }
 
-  /* Red margin line, like a real notebook */
+  /* Red margin line — default: right side (cards 1 & 3) */
   .problem-card::before {
     content: '';
     position: absolute;
-    left: 36px;
+    left: auto;
+    right: 36px;
     top: 0;
     bottom: 0;
     width: 1.5px;
@@ -216,21 +190,32 @@ const problems = [
     z-index: 1;
   }
 
-  /* Second card: margin on the right — becomes the right-hand page of an open notebook */
-  .problem-card:nth-child(2)::before {
-    left: auto;
-    right: 36px;
-  }
-
-  /* Second card: mirror the padding so content clears the right margin line */
-  .problem-card:nth-child(2) .card-head,
-  .problem-card:nth-child(2) .math-block,
-  .problem-card:nth-child(2) .solution-block {
-    padding-right: 52px;
-    padding-left: 20px;
-  }
-
-.problem-card:nth-child(3) {
+/* ── Card 2 (Составитель): straight left edge, torn right edge ── */
+  .problem-card:nth-child(2) {
+    border-left: 1.5px solid var(--border);
+    border-right: none;
+    clip-path: polygon(
+      0% 0%, 100% 0%,
+      calc(100% - 3px) 3%,  100%             6%,
+      calc(100% - 5px) 9%,  calc(100% - 1px) 12%,
+      calc(100% - 4px) 15%, calc(100% - 6px) 18%,
+      calc(100% - 2px) 21%, calc(100% - 3px) 24%,
+      100%             27%, calc(100% - 5px) 30%,
+      calc(100% - 1px) 33%, calc(100% - 4px) 36%,
+      calc(100% - 2px) 39%, calc(100% - 6px) 42%,
+      calc(100% - 3px) 45%, 100%             48%,
+      calc(100% - 5px) 51%, calc(100% - 4px) 54%,
+      calc(100% - 1px) 57%, calc(100% - 3px) 60%,
+      calc(100% - 6px) 63%, calc(100% - 2px) 66%,
+      calc(100% - 4px) 69%, 100%             72%,
+      calc(100% - 5px) 75%, calc(100% - 3px) 78%,
+      calc(100% - 1px) 81%, calc(100% - 4px) 84%,
+      calc(100% - 6px) 87%, calc(100% - 2px) 90%,
+      calc(100% - 3px) 93%, 100%             96%,
+      calc(100% - 5px) 99%, 100%             100%,
+      0% 100%
+    );
+    /* Baked-in 8px offset so the 28px cycle hits exactly at 36px (8 + 28 = 36) */
     background-image:
       repeating-linear-gradient(
         to right,
@@ -248,6 +233,43 @@ const problems = [
         rgba(180, 200, 220, 0.2) 27px,
         rgba(180, 200, 220, 0.2) 28px
       );
+    background-position: 0 0, 0 0;
+  }
+
+  /* ── Card 2: Force red margin to the LEFT ── */
+  .problem-card:nth-child(2)::before {
+    left: 36px;
+    right: auto;
+  }
+
+  /* ── Card 2: Shift content to clear the left margin ── */
+  .problem-card:nth-child(2) .card-head,
+  .problem-card:nth-child(2) .math-block,
+  .problem-card:nth-child(2) .solution-block {
+    padding-left: 52px;
+    padding-right: 20px;
+  }
+
+/* Card 3 (Диспетчер): checkered paper, inherits torn-left + right margin */
+  .problem-card:nth-child(3) {
+    background-image:
+      repeating-linear-gradient(
+        to left,
+        transparent 0,
+        transparent 8px,
+        rgba(180, 200, 220, 0.2) 8px,
+        rgba(180, 200, 220, 0.2) 9px,
+        transparent 9px,
+        transparent 28px
+      ),
+      repeating-linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent 27px,
+        rgba(180, 200, 220, 0.2) 27px,
+        rgba(180, 200, 220, 0.2) 28px
+      );
+    background-position: 0 0, 0 0;
   }
 
   /* ── Card header ─── */
@@ -255,7 +277,7 @@ const problems = [
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 20px 20px 16px 52px;
+    padding: 20px 52px 16px 20px;
     position: relative;
   }
 
@@ -327,7 +349,7 @@ const problems = [
     grid-template-columns: 68px 1fr;
     gap: 6px;
     align-items: baseline;
-    padding: 10px 20px 0 52px;
+    padding: 10px 52px 0 20px;
   }
 
   .math-label {
@@ -373,7 +395,7 @@ const problems = [
   .solution-block {
     margin-top: auto;
     border-top: none;
-    padding: 20px 20px 20px 52px;
+    padding: 20px 52px 20px 20px;
     /* Slightly more opaque to clearly cover the notebook lines */
     background: transparent;
     position: relative;
